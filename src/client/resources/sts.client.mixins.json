@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.agent59.mixin.client",
+  "package": "net.pawlrip.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BipedEntityModelMixin",

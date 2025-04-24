@@ -6,13 +6,13 @@
   "name": "SpeechToSpell",
   "description": "Do magic with your voice",
   "authors": [
-    "agent59"
+    "pawlrip"
   ],
   "contact": {
     "homepage": "",
     "modrinth": "https://modrinth.com/mod/speech_to_spell",
-    "issues": "https://github.com/Agent59/SpeechToSpell/issues",
-    "sources": "https://github.com/Agent59/SpeechToSpell"
+    "issues": "https://github.com/pawlrip/SpeechToSpell/issues",
+    "sources": "https://github.com/pawlrip/SpeechToSpell"
   },
 
   "license": "LGPL-3.0 License",
@@ -21,13 +21,13 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.agent59.StSMain"
+      "net.pawlrip.StSMain"
     ],
     "client": [
-      "net.agent59.StSClient"
+      "net.pawlrip.StSClient"
     ],
     "cardinal-components": [
-      "net.agent59.cardinal_component.Components"
+      "net.pawlrip.cardinal_component.Components"
     ]
   },
   "mixins": [
