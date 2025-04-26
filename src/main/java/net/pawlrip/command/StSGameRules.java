@@ -21,7 +21,7 @@ public class StSGameRules {
     public static final GameRules.Key<GameRules.IntRule> SPELL_HOTBAR_SLOTS = GameRuleRegistry.register(
             "spellHotbarSlots", MAGIC, GameRuleFactory.createIntRule(5, 0, (server, intRule) -> {
                 for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                    ServerPlayerMagicComponent.getInstance(player).onSpellHotbarSlotsGameruleChange();
+                    ServerPlayerMagicComponent.getInstance(player).onSpellHotbarSlotsGameruleChange(intRule.get());
                 }
             })
     );
