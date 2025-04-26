@@ -80,8 +80,8 @@ public class ServerPlayerMagicComponent extends PlayerMagicComponent {
      * Applies necessary changes, when the {@link StSGameRules#SPELL_HOTBAR_SLOTS} gamerule changes.
      * <p> Shortens or lengthens the spell-hotbar, resets the selected slot to {@code 0} and does a {@link #fullSync()}.
      */
-    public void onSpellHotbarSlotsGameruleChange() {
-        Spell[] newHotbar = new Spell[player.getWorld().getGameRules().getInt(StSGameRules.SPELL_HOTBAR_SLOTS)];
+    public void onSpellHotbarSlotsGameruleChange(int newSpellHotbarSize) {
+        Spell[] newHotbar = new Spell[newSpellHotbarSize];
         for (int i = 0; i < newHotbar.length; i++) {
             if (spellHotbar.length == i) break;
             newHotbar[i] = spellHotbar[i];
