@@ -23,7 +23,7 @@ import java.util.Optional;
  */
 public class StSSimpleRegistry<T> extends SimpleRegistry<T> {
 
-    public static final Codec<Identifier> STS_IDENTIFIER =  Codec.STRING.comapFlatMap(
+    public static final Codec<Identifier> STS_IDENTIFIER = Codec.STRING.comapFlatMap(
             str -> {
                 if (!str.contains(":")) str = StSMain.MOD_ID + ":" + str;
                 return Identifier.validate(str);
