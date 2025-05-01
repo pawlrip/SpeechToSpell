@@ -7,6 +7,7 @@ import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
+import io.github.cottonmc.cotton.gui.widget.icon.Icon;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -40,7 +41,7 @@ public class WSpellIconButton extends WWidget {
     @Nullable private BackgroundPainter backgroundPainter = BackgroundPainter.SLOT;
     @Nullable private Consumer<WSpellIconButton> onClick;
 
-    private ItemIcon fallBackIcon = new ItemIcon(ItemStack.EMPTY);
+    private Icon fallBackIcon = new ItemIcon(ItemStack.EMPTY);
     private Text fallBackTooltip = Text.empty();
 
     public WSpellIconButton() {
@@ -134,11 +135,11 @@ public class WSpellIconButton extends WWidget {
         return this;
     }
 
-    public ItemIcon getFallBackIcon() {
+    public Icon getFallBackIcon() {
         return this.fallBackIcon;
     }
 
-    public WSpellIconButton setFallBackIcon(ItemIcon icon) {
+    public WSpellIconButton setFallBackIcon(Icon icon) {
         this.fallBackIcon = icon;
         return this;
     }

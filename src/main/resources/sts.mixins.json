@@ -4,8 +4,10 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractBlockStateMixin",
+    "ItemIconAccessor",
     "LootableContainerBlockEntityMixin",
     "PlayerManagerMixin",
+    "TextureIconAccessor",
     "ViewerCountManagerMixin"
   ],
   "injectors": {

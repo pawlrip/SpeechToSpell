@@ -4,11 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.cottonmc.cotton.gui.widget.icon.Icon;
-import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
+import io.github.cottonmc.cotton.gui.widget.icon.TextureIcon;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
@@ -54,15 +52,9 @@ public abstract class Spell {
      * The basic configuration information every spell requires to properly function.
      */
     public final BaseConfiguration baseConfiguration;
-    /**
-     * Used so to not be needing to recreate {@link ItemIcon}s and thus ItemStacks when displaying icons of spells.
-     * @see #getIcon()
-     */
-    public final Icon icon;
 
     public Spell(BaseConfiguration baseConfiguration) {
         this.baseConfiguration = baseConfiguration;
-        this.icon = new ItemIcon(baseConfiguration.displayItem());
     }
 
     /**
@@ -183,18 +175,10 @@ public abstract class Spell {
     }
 
     /**
-     * @return The item whose icon is displayed.
-     * @see #getIcon()
-     */
-    public Item getDisplayItem() {
-        return this.getBaseConf().displayItem();
-    }
-
-    /**
-     * @return The spells {@link #icon}. Initially created with {@link #getDisplayItem()}.
+     * @return The spells icon.
      */
     public Icon getIcon() {
-        return this.icon;
+        return this.getBaseConf().icon();
     }
 
     /**
@@ -242,7 +226,7 @@ public abstract class Spell {
      * @param incantation See {@link #getIncantation()}
      * @param name See {@link #getName()}
      * @param description See {@link #getDescription()}
-     * @param displayItem See {@link #getDisplayItem()}
+     * @param icon See {@link #getIcon()}
      * @param defaultUnlockState See {@link #getDefaultUnlockState}
      * @param duration See {@link #getCastingTime()}
      * @param cooldown See {@link #getCooldownTime()}
@@ -252,7 +236,7 @@ public abstract class Spell {
             String incantation,
             Text name,
             Text description,
-            Item displayItem,
+            Icon icon,
             SpellState.UnlockState defaultUnlockState,
             int duration,
             int cooldown
@@ -262,7 +246,7 @@ public abstract class Spell {
                 Codec.STRING.fieldOf("incantation").forGetter(BaseConfiguration::incantation),
                 CodecUtil.BETTER_TEXT.fieldOf("name").forGetter(BaseConfiguration::name),
                 CodecUtil.BETTER_TEXT.optionalFieldOf("description", Text.empty()).forGetter(BaseConfiguration::description),
-                Registries.ITEM.getCodec().optionalFieldOf("icon", Items.AIR).forGetter(BaseConfiguration::displayItem),
+                CodecUtil.ICON.optionalFieldOf("icon", new TextureIcon(new Identifier("missingno"))).forGetter(BaseConfiguration::icon),
                 SpellState.UnlockState.CODEC.fieldOf("default_unlock_state").forGetter(BaseConfiguration::defaultUnlockState),
                 Codecs.NONNEGATIVE_INT.fieldOf("duration").forGetter(BaseConfiguration::duration),
                 Codecs.NONNEGATIVE_INT.fieldOf("cooldown").forGetter(BaseConfiguration::cooldown)
