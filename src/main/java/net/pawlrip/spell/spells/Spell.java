@@ -47,15 +47,7 @@ import java.util.Map;
  * @see net.pawlrip.cardinal_component.MagicComponent
  * @see net.pawlrip.cardinal_component.player_magic_comp.PlayerMagicComponent
  */
-public abstract class Spell {
-    /**
-     * The basic configuration information every spell requires to properly function.
-     */
-    public final BaseConfiguration baseConfiguration;
-
-    public Spell(BaseConfiguration baseConfiguration) {
-        this.baseConfiguration = baseConfiguration;
-    }
+public interface Spell {
 
     /**
      * Every spell needs to create a {@link SpellTypes.SpellType} entry in {@link SpellTypes}.
@@ -64,14 +56,19 @@ public abstract class Spell {
      * with the id, which the loaded spell will later have in its BaseConfiguration.
      * @return The corresponding entry from {@link SpellTypes}.
      */
-    public abstract SpellTypes.SpellType<? extends Spell> getType();
+    SpellTypes.SpellType<? extends Spell> getType();
+
+    /**
+     * @return The basic configuration of the spell.
+     */
+    BaseConfiguration baseConf();
 
     /**
      * This check is not reached if there are already reasons for the spell not to be cast (e.g. it's cooling down).
      * @param state The state of the spell.
      * @return {@code true} when the spell can be cast.
      */
-    public boolean canCast(SpellState state) {
+    default boolean canCast(SpellState state) {
         return true;
     }
 
@@ -88,7 +85,7 @@ public abstract class Spell {
      * @param state The state of the spell.
      * @return {@code true} when casting should finish early.
      */
-    public abstract boolean tickCasting(SpellState state);
+    boolean tickCasting(SpellState state);
 
     /**
      * Is automatically called if the spell is stopped early during casting.
@@ -97,7 +94,7 @@ public abstract class Spell {
      *
      * @param state The state of the spell.
      */
-    public void endEarly(SpellState state) {}
+    default void endEarly(SpellState state) {}
 
     /**
      * Is called every tick the spell is cooling down.
@@ -110,7 +107,7 @@ public abstract class Spell {
      *
      * @return {@code true} when the cooldown should finish early.
      */
-    public boolean tickCooldown(SpellState state) {
+    default boolean tickCooldown(SpellState state) {
         return false;
     }
 
@@ -122,7 +119,7 @@ public abstract class Spell {
      * @return The {@link SpellStateComponentTypes.SpellStateComponentType}s that this spell requires<br>
      * (e.g. to work every tick) and their corresponding default values.
      */
-    public Map<SpellStateComponentTypes.SpellStateComponentType<?>, Object> getRequiredSpellStateComponents() {
+    default Map<SpellStateComponentTypes.SpellStateComponentType<?>, Object> getRequiredSpellStateComponents() {
         return Collections.emptyMap();
     }
 
@@ -130,96 +127,78 @@ public abstract class Spell {
      * @param entity The entity the state should belong to.
      * @return The default state of the spell.
      */
-    public SpellState getDefaultState(LivingEntity entity) {
+    default SpellState getDefaultState(LivingEntity entity) {
         return new SpellState(entity, this,
-                this.getBaseConf().defaultUnlockState(),
+                this.baseConf().defaultUnlockState(),
                 new SpellStateComponentMap(this.getRequiredSpellStateComponents())
         );
     }
 
     /**
-     * May be used as a shortcut to get the BaseConfiguration of the spell.
-     * <p><i>Some more shortcut methods, that return specific configuration fields, are implemented below this method.</i>
-     * @return The basic configuration of the spell.
-     */
-    public final BaseConfiguration getBaseConf() {
-        return this.baseConfiguration;
-    }
-
-    /**
      * @return The id with which the spell is registered in the {@link net.pawlrip.spell.SpellManager}.
      */
-    public final Identifier getId() {
-        return this.getBaseConf().id();
+    default Identifier getId() {
+        return this.baseConf().id();
     }
 
     /**
      * @return The word(s) that the speech recognition needs to recognize to cast the spell.
      */
-    public final String getIncantation() {
-        return this.getBaseConf().incantation();
+    default String getIncantation() {
+        return this.baseConf().incantation();
     }
 
     /**
      * @return The name of the spell (Text formatting and translations can be used in the json files).
      */
-    public Text getName() {
-        return this.getBaseConf().name();
+    default Text getName() {
+        return this.baseConf().name();
     }
 
     /**
      * @return The description of the spell (Text formatting and translations can be used in the json files).
      */
-    public Text getDescription() {
-        return this.getBaseConf().description();
+    default Text getDescription() {
+        return this.baseConf().description();
     }
 
     /**
      * @return The spells icon.
      */
-    public Icon getIcon() {
-        return this.getBaseConf().icon();
+    default Icon getIcon() {
+        return this.baseConf().icon();
     }
 
     /**
      * @return In what way the spell is unlocked by default<br>(e.g. it's locked, unlocked, speechless casting is unlocked, etc.).
      */
-    public SpellState.UnlockState getDefaultUnlockState() {
-        return this.getBaseConf().defaultUnlockState();
+    default SpellState.UnlockState getDefaultUnlockState() {
+        return this.baseConf().defaultUnlockState();
     }
 
     /**
      * @return The ticks it takes to cool this spell down.
      */
-    public int getCooldownTime() {
-        return this.getBaseConf().cooldown();
+    default int getCooldownTime() {
+        return this.baseConf().cooldown();
     }
 
     /**
      * @return The time in ticks for which the spell is cast.
      */
-    public int getCastingTime() {
-        return this.getBaseConf().duration();
-    }
-
-    /**
-     * Used for logging and debugging.
-     * @return The string of the Spell-Object, with the spells base configuration appended to it.
-     */
-    @Override
-    public String toString() {
-        return super.toString() + this.getBaseConf();
+    default int getCastingTime() {
+        return this.baseConf().duration();
     }
 
     /**
      * Contains the basic configuration options a spell needs to have and be able to provide.<br>
      * It is strongly advised that spells use the {@code BaseConfiguration.MAP_CODEC} for their own codec:
      * <pre> {@code
-     *     public static final Codec<SomeSpell> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-     *             BaseConfiguration.MAP_CODEC.forGetter(Spell::getBaseConf),
+     *     public static final Codec<ExampleSpell> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+     *             BaseConfiguration.MAP_CODEC.forGetter(ExampleSpell::baseConf),
      *             // Add spell specific configuration options here, e.g.:
-     *             Codec.INT.optionalFieldOf("example_int", 0).forGetter(SomeSpell::getExampleInt)
-     *     ).apply(instance, TestSpell::new));
+     *             Codec.INT.optionalFieldOf("example_int", 0).forGetter(SomeSpell::exampleInt)
+     *     ).apply(instance, ExampleSpell::new));
      * }</pre>
      *
      * @param id See {@link #getId()}
@@ -231,7 +210,7 @@ public abstract class Spell {
      * @param duration See {@link #getCastingTime()}
      * @param cooldown See {@link #getCooldownTime()}
      */
-    public record BaseConfiguration(
+    record BaseConfiguration(
             Identifier id,
             String incantation,
             Text name,

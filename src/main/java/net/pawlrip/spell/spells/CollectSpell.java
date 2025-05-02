@@ -20,30 +20,21 @@ import java.util.function.Predicate;
  * laying in the {@link #range}.
  * <p>At the moment this spell only has an effect when a player casts it.
  */
-public class CollectSpell extends Spell {
+public record CollectSpell(
+        BaseConfiguration baseConf,
+        int range,
+        boolean collect_items,
+        boolean collect_xp,
+        boolean collect_projectiles
+) implements Spell {
+
     public static final Codec<CollectSpell> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            BaseConfiguration.MAP_CODEC.forGetter(Spell::getBaseConf),
-            Codecs.NONNEGATIVE_INT.fieldOf("range").forGetter(spell -> spell.range),
-            Codec.BOOL.fieldOf("collect_items").forGetter(spell -> spell.collect_items),
-            Codec.BOOL.fieldOf("collect_xp").forGetter(spell -> spell.collect_xp),
-            Codec.BOOL.fieldOf("collect_projectiles").forGetter(spell -> spell.collect_projectiles)
+            BaseConfiguration.MAP_CODEC.forGetter(CollectSpell::baseConf),
+            Codecs.NONNEGATIVE_INT.fieldOf("range").forGetter(CollectSpell::range),
+            Codec.BOOL.fieldOf("collect_items").forGetter(CollectSpell::collect_items),
+            Codec.BOOL.fieldOf("collect_xp").forGetter(CollectSpell::collect_xp),
+            Codec.BOOL.fieldOf("collect_projectiles").forGetter(CollectSpell::collect_projectiles)
     ).apply(instance, CollectSpell::new));
-
-    private final int range;
-    private final boolean collect_items;
-    private final boolean collect_xp;
-    private final boolean collect_projectiles;
-
-    public CollectSpell(
-            BaseConfiguration baseConfiguration,
-            int range, boolean collect_items, boolean collect_xp, boolean collect_projectiles
-    ) {
-        super(baseConfiguration);
-        this.range = range;
-        this.collect_items = collect_items;
-        this.collect_xp = collect_xp;
-        this.collect_projectiles = collect_projectiles;
-    }
 
     @Override
     public SpellTypes.SpellType<? extends Spell> getType() {
