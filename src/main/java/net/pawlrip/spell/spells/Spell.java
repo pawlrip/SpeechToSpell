@@ -191,6 +191,13 @@ public interface Spell {
     }
 
     /**
+     * @return The time in ticks between each trigger of the spells effect.
+     */
+    default int getTickInterval() {
+        return this.baseConf().tickInterval();
+    }
+
+    /**
      * Contains the basic configuration options a spell needs to have and be able to provide.<br>
      * It is strongly advised that spells use the {@code BaseConfiguration.MAP_CODEC} for their own codec:
      * <pre> {@code
@@ -209,6 +216,7 @@ public interface Spell {
      * @param defaultUnlockState See {@link #getDefaultUnlockState}
      * @param duration See {@link #getCastingTime()}
      * @param cooldown See {@link #getCooldownTime()}
+     * @param tickInterval See {@link #getTickInterval()}
      */
     record BaseConfiguration(
             Identifier id,
@@ -218,7 +226,8 @@ public interface Spell {
             Icon icon,
             SpellState.UnlockState defaultUnlockState,
             int duration,
-            int cooldown
+            int cooldown,
+            int tickInterval
     ) {
         public static final MapCodec<BaseConfiguration> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 Identifier.CODEC.fieldOf(MergingJsonDataLoader.ID_FIELD).forGetter(BaseConfiguration::id),
@@ -228,7 +237,8 @@ public interface Spell {
                 CodecUtil.ICON.optionalFieldOf("icon", new TextureIcon(new Identifier("missingno"))).forGetter(BaseConfiguration::icon),
                 SpellState.UnlockState.CODEC.fieldOf("default_unlock_state").forGetter(BaseConfiguration::defaultUnlockState),
                 Codecs.NONNEGATIVE_INT.fieldOf("duration").forGetter(BaseConfiguration::duration),
-                Codecs.NONNEGATIVE_INT.fieldOf("cooldown").forGetter(BaseConfiguration::cooldown)
+                Codecs.NONNEGATIVE_INT.fieldOf("cooldown").forGetter(BaseConfiguration::cooldown),
+                Codecs.NONNEGATIVE_INT.optionalFieldOf("tick_interval", 0).forGetter(BaseConfiguration::tickInterval)
         ).apply(instance, BaseConfiguration::new));
     }
 }
