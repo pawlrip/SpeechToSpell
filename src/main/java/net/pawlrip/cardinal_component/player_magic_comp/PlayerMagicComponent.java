@@ -75,7 +75,7 @@ public abstract class PlayerMagicComponent implements MagicComponent {
      * The actual initialization is done in the {@link ServerPlayerMagicComponent}.
      * <p>The actual size of the spellHotbar depends on the {@link StSGameRules#SPELL_HOTBAR_SLOTS} gamerule
      * and the correct size is synced to the client during a full sync.
-     * @see ServerPlayerMagicComponent#onSpellHotbarSlotsGameruleChange()
+     * @see ServerPlayerMagicComponent#onSpellHotbarSlotsGameruleChange(int)
      */
     protected @Nullable Spell @NotNull[] spellHotbar = new Spell[0];
     protected int selectedSpellHotbarSlot = 0;
