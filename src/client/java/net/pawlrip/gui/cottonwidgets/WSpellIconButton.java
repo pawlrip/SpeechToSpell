@@ -34,7 +34,7 @@ public class WSpellIconButton extends WWidget {
     /**
      * The style that is used in the tooltip for the parts, of the spell's description, that are not styled .
      */
-    public static final Style DESCRIPTION_FALLBACK_STYLE = Style.EMPTY.withFormatting(Formatting.DARK_GRAY);
+    public static final Style DESCRIPTION_FALLBACK_STYLE = Style.EMPTY.withFormatting(Formatting.GRAY);
     public static final int FOCUS_AND_HOVER_OUTLINE_COLOR = 0xFFFFFFFF;
 
     @Nullable private Spell spell;
@@ -92,6 +92,10 @@ public class WSpellIconButton extends WWidget {
         Text description = this.spell.getDescription();
         if (!description.toString().equals("empty")) {
             information.add(description.copy().setStyle(description.getStyle().withParent(DESCRIPTION_FALLBACK_STYLE)));
+        }
+
+        if (MinecraftClient.getInstance().options.advancedItemTooltips) {
+            information.add(Text.literal(this.spell.getId().toString()).formatted(Formatting.DARK_GRAY));
         }
     }
 
