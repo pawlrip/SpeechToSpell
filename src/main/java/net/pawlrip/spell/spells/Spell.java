@@ -238,7 +238,7 @@ public interface Spell {
                 SpellState.UnlockState.CODEC.fieldOf("default_unlock_state").forGetter(BaseConfiguration::defaultUnlockState),
                 Codecs.NONNEGATIVE_INT.fieldOf("duration").forGetter(BaseConfiguration::duration),
                 Codecs.NONNEGATIVE_INT.fieldOf("cooldown").forGetter(BaseConfiguration::cooldown),
-                Codecs.NONNEGATIVE_INT.optionalFieldOf("tick_interval", 0).forGetter(BaseConfiguration::tickInterval)
+                Codecs.POSITIVE_INT.optionalFieldOf("tick_interval", 1).forGetter(BaseConfiguration::tickInterval)
         ).apply(instance, BaseConfiguration::new));
     }
 }
